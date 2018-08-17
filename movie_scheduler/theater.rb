@@ -11,27 +11,11 @@ module MovieScheduler
     end
 
     def self.current_day
-      current_day = Date.today.strftime("%A")
+      current_day = Date.today.strftime( '%A' ).to_sym
     end
 
     def self.get_todays_hours
-      # Monday - Thursday 8:00am - 11:00pm
-      # Friday - Sunday 10:30am - 11:30pm
-      standard_schedule = {
-        open_at: 8,
-        close_at: 23
-      }
-
-      reduced_schedule = {
-        open_at: 10.5,
-        close_at: 23.5
-      }
-
-      if [ 'Friday', 'Saturday', 'Sunday' ].include?( current_day )
-        reduced_schedule
-      else
-        standard_schedule
-      end
+      MovieScheduler::Configuration.operating_hours[ current_day ]
     end
 
     def self.schedule_screenings( movie )
