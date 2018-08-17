@@ -21,11 +21,10 @@ module MovieScheduler
     end
 
     def self.convert_runtime( run_time )
-      run_time_arr = run_time.gsub!( /\n/, '' ).split( ':' )
-      hours = ( run_time_arr[ 0 ].to_i * 60 )
-      minutes = run_time_arr[ 1 ].to_i
-
-      total_runtime = hours + minutes
+      run_time_arr  = run_time.gsub!( /\n/, '' ).split( ':' )
+      hours         = run_time_arr[ 0 ].to_i
+      minutes       = ( run_time_arr[ 1 ].to_f / 60 )
+      total_runtime = ( hours + minutes )
     end
   end
 end

@@ -7,7 +7,7 @@ module MovieScheduler
     end
 
     def self.interval
-      @interval   = ( 35.to_f / 60.to_f )
+      @interval = ( 35.to_f / 60.to_f )
     end
 
     def self.current_day
@@ -18,22 +18,31 @@ module MovieScheduler
       MovieScheduler::Configuration.operating_hours[ current_day ]
     end
 
+    def self.max_hours_per_screen
+      open_at       = get_todays_hours[ :open_at ] + setup_time
+      close_at      = get_todays_hours[ :close_at ]
+      screen_time   = ( close_at - open_at )
+    end
+
     def self.schedule_screenings( movie )
       # a movie has a run time
       # for each potential screening of a movie, we start at the end of the day
       # and subtract the run time from the total time left
       # until we run out of time
+
       screening = Screening.new( movie )
 
-      total_possible_screenings = screening.total_possible_screenings
+      max_hours = max_hours_per_screen
 
-      available_screentime = screening.screen_time_minutes
-
-      total_possible_screenings.times do
-        current_screening = available_screentime -= screening.run_time
-        humanize_screening = ( ( screening.screen_time_minutes - current_screening ) / screening.screen_time_minutes )
-        puts " #{ movie[ :title ] } showing at #{ humanize_screening }"
+      while max_hours >= screening.run_time
+        max_hours -= screening.run_time
+        # puts "showing at #{ humanize_time( max_hours ) }"
+        puts "run time #{ screening.run_time } | max_hours #{ max_hours }"
       end
+    end
+
+    def self.humanize_time( int )
+      ( get_todays_hours[ :close_at ] - int )
     end
 
     def self.build_movie_schedule( movie )
