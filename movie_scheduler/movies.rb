@@ -7,7 +7,7 @@ module MovieScheduler
           line_arr = line.split( ', ' )
 
           movie = {
-            movie_title: line_arr[ 0 ],
+            title: line_arr[ 0 ],
             release_year: line_arr[ 1 ],
             rating: line_arr[ 2 ],
             run_time: convert_runtime( line_arr[ 3 ] )
@@ -17,7 +17,7 @@ module MovieScheduler
         end
       end
 
-      puts movies
+      movies
     end
 
     def self.convert_runtime( run_time )
