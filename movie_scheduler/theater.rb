@@ -25,28 +25,66 @@ module MovieScheduler
     end
 
     def self.schedule_screenings( movie )
-      # a movie has a run time
-      # for each potential screening of a movie, we start at the end of the day
-      # and subtract the run time from the total time left
-      # until we run out of time
+      if movie[ :title ] = "The Proposal"
+        # a movie has a run time
+        # for each potential screening of a movie, we start at the end of the day
+        # and subtract the run time from the total time left
+        # until we run out of time
 
-      screening = Screening.new( movie )
+        closing_time = get_todays_hours[ :close_at ]
+        opening_time = get_todays_hours[ :open_at ]
 
-      max_hours = max_hours_per_screen
+        screening = Screening.new( movie )
 
-      while max_hours >= screening.run_time
-        max_hours -= screening.run_time
-        # puts "showing at #{ humanize_time( max_hours ) }"
-        puts "run time #{ screening.run_time } | max_hours #{ max_hours }"
+        remaining_hours = get_todays_hours[ :close_at ]
+
+        total_run_time = screening.run_time
+
+        show_times = []
+
+        while remaining_hours > opening_time
+          showing = remaining_hours -= total_run_time
+
+          show_times.push(
+            {
+              title: movie[ :title ],
+              run_time: total_run_time,
+              raw_time: showing,
+              pretty_time: convert_time( showing )
+            }
+          )
+        end
+        puts "#{ show_times[ 0 ] }"
       end
     end
 
     def self.humanize_time( int )
-      ( get_todays_hours[ :close_at ] - int )
     end
 
     def self.build_movie_schedule( movie )
       schedule_screenings( movie )
+    end
+
+    def self.convert_time( int )
+      suffix = 'A.M.'
+
+      if int > 12
+        suffix = 'P.M'
+        int -= 12
+      end
+
+      string = int.to_s
+
+      hours = string.split( '.' ).first.to_i
+      minutes = ( ( int - hours ) * 60 ).ceil
+
+      if minutes < 10
+        minutes = "0#{ minutes }"
+      else
+        minutes.to_s
+      end
+
+      converted_time = "#{ hours }:#{ minutes } #{ suffix }"
     end
   end
 end
