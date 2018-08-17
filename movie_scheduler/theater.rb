@@ -11,7 +11,7 @@ module MovieScheduler
       current_day = Date.today.strftime("%A")
     end
 
-    def operating_hours
+    def get_todays_hours
       # Monday - Thursday 8:00am - 11:00pm
       # Friday - Sunday 10:30am - 11:30pm
       standard_schedule = {
