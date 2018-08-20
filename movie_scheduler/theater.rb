@@ -25,35 +25,36 @@ module MovieScheduler
     end
 
     def self.schedule_screenings( movie )
-      if movie[ :title ] == "The Proposal"
-        # a movie has a run time
-        # for each potential screening of a movie, we start at the end of the day
-        # and subtract the run time from the total time left
-        # until we run out of time
+      closing_time = get_todays_hours[ :close_at ]
+      opening_time = get_todays_hours[ :open_at ]
 
-        closing_time = get_todays_hours[ :close_at ]
-        opening_time = get_todays_hours[ :open_at ]
+      screening = Screening.new( movie )
 
-        screening = Screening.new( movie )
+      remaining_hours = closing_time
 
-        remaining_hours = closing_time
+      total_run_time = screening.run_time
 
-        total_run_time = screening.run_time
+      show_times = []
 
-        show_times = []
+      while remaining_hours > ( opening_time + total_run_time )
+        show_time = ( remaining_hours - total_run_time )
 
-        while remaining_hours > ( opening_time + total_run_time )
-          show_time = ( remaining_hours - total_run_time )
+        rounded_time, humanized_time = humanize_time( show_time )
 
-          rounded_time, humanized_time = humanize_time( show_time )
+        rounded_end_time, humanized_end_time = humanize_time( show_time + total_run_time )
 
-          show_times.push( humanized_time )
+        show_times.push( { starts_at: humanized_time, ends_at: humanized_end_time } )
 
-          remaining_hours = remaining_hours - ( remaining_hours - rounded_time )
-        end
-
-        puts show_times
+        remaining_hours = remaining_hours - ( remaining_hours - rounded_time )
       end
+
+
+      schedule = {
+        title: movie[ :title ],
+        rating: movie[ :rating ],
+        run_time: movie[ :run_time ],
+        show_times: show_times.reverse
+      }
     end
 
     def self.humanize_time( int )
