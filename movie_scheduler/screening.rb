@@ -6,7 +6,7 @@ module MovieScheduler
     end
 
     def run_time
-      movie_run_time = ( @movie[ :run_time ] + @interval )
+      movie_run_time = ( @movie[ :converted_run_time ] + @interval )
     end
 
     def total_possible_screenings

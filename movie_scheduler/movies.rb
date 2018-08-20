@@ -10,7 +10,8 @@ module MovieScheduler
             title: line_arr[ 0 ],
             release_year: line_arr[ 1 ],
             rating: line_arr[ 2 ],
-            run_time: convert_runtime( line_arr[ 3 ] )
+            absolute_run_time: line_arr[ 3 ],
+            converted_run_time: convert_runtime( line_arr[ 3 ] )
           }
 
           movies.push( movie )

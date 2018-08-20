@@ -41,18 +41,17 @@ module MovieScheduler
 
         rounded_time, humanized_time = humanize_time( show_time )
 
-        rounded_end_time, humanized_end_time = humanize_time( show_time + total_run_time )
+        rounded_end_time, humanized_end_time = humanize_time( show_time + movie[ :converted_run_time ] )
 
         show_times.push( { starts_at: humanized_time, ends_at: humanized_end_time } )
 
         remaining_hours = remaining_hours - ( remaining_hours - rounded_time )
       end
 
-
       schedule = {
         title: movie[ :title ],
         rating: movie[ :rating ],
-        run_time: movie[ :run_time ],
+        absolute_run_time: movie[ :absolute_run_time ],
         show_times: show_times.reverse
       }
     end
@@ -63,9 +62,6 @@ module MovieScheduler
       [ rounded_time, humanized_time ]
     end
 
-    def self.build_movie_schedule( movie )
-      schedule_screenings( movie )
-    end
 
     def self.round_time( int )
       hours, minutes = int.divmod( 1 )
@@ -93,6 +89,10 @@ module MovieScheduler
       min, sec = sec.divmod( 60 )
       hour, min = min.divmod( 60 )
       "%02d:%02d:%02d" % [ hour, min, sec ]
+    end
+
+    def self.build_movie_schedule( movie )
+      schedule_screenings( movie )
     end
   end
 end

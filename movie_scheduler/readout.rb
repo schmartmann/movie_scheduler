@@ -9,7 +9,7 @@ module MovieScheduler
     end
 
     def build_movie_header( movie )
-      "\n#{ movie[ :title ] } - Rated: #{ movie[ :rating ] }, #{ movie[ :run_time ] } \n"
+      "\n#{ movie[ :title ] } - Rated: #{ movie[ :rating ] }, #{ movie[ :absolute_run_time ] } \n"
     end
 
     def build_show_times_list( movie )
