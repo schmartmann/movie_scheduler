@@ -14,7 +14,14 @@ module MovieScheduler
       unless current_day
         current_day = Date.today.strftime( '%A' ).to_sym
       else
-        current_day.capitalize.to_sym
+        valid_weekdays = MovieScheduler::Configuration.operating_hours.keys
+        current_day = current_day.capitalize.to_sym
+
+        if valid_weekdays.include?( current_day )
+          current_day
+        else
+          raise "Please supply a valid weekday #{ valid_weekdays }"
+        end
       end
     end
 
