@@ -10,12 +10,17 @@ module MovieScheduler
       @interval = ( 35.to_f / 60.to_f )
     end
 
-    def self.current_day
-      current_day = Date.today.strftime( '%A' ).to_sym
+    def self.current_day( current_day = nil )
+      unless current_day
+        current_day = Date.today.strftime( '%A' ).to_sym
+      else
+        current_day.capitalize.to_sym
+      end
     end
 
-    def self.get_todays_hours
-      MovieScheduler::Configuration.operating_hours[ current_day ]
+    def self.get_todays_hours( weekday )
+      day = current_day( weekday )
+      MovieScheduler::Configuration.operating_hours[ day ]
     end
 
     def self.max_hours_per_screen
@@ -24,9 +29,9 @@ module MovieScheduler
       screen_time   = ( close_at - open_at )
     end
 
-    def self.schedule_screenings( movie )
-      closing_time = get_todays_hours[ :close_at ]
-      opening_time = get_todays_hours[ :open_at ]
+    def self.schedule_screenings( movie, weekday )
+      closing_time = get_todays_hours( weekday )[ :close_at ]
+      opening_time = get_todays_hours( weekday )[ :open_at ]
 
       screening = Screening.new( movie )
 
@@ -91,8 +96,8 @@ module MovieScheduler
       "%02d:%02d:%02d" % [ hour, min, sec ]
     end
 
-    def self.build_movie_schedule( movie )
-      schedule_screenings( movie )
+    def self.build_movie_schedule( movie, weekday )
+      schedule_screenings( movie, weekday )
     end
   end
 end
